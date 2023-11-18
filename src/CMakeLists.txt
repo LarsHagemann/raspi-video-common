@@ -1,7 +1,8 @@
 set(
   RASPI_VIDEO_COMMON_LIB_SOURCE
 
-  lib.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/ip-address.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/utils.cpp
 )
 
 add_library(
@@ -15,3 +16,4 @@ target_include_directories(
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}/../include/
 )
+message("${CMAKE_CURRENT_LIST_DIR}/../include/")
