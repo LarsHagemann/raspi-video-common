@@ -1,0 +1,109 @@
+---
+name: ci-for-raspi-video-caster
+on: 
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  ci:
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Set up GCC
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: 12
+        platform: x64
+
+
+    - name: Semantic Version
+      id: version
+      uses: paulhatch/semantic-version@v5.3.0
+      with:
+        change_path: "."
+        minor_pattern: "feat|feature|(minor)|!|(!)"
+        major_pattern: "!!|(BREAKING)|(major)|(!!)"
+
+    - name: Generate Changelog
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@v3
+      continue-on-error: true
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ matrix.type }}-${{ matrix.os }}
+
+    - name: Build
+      uses: lukka/run-cmake@v3.4
+      env:
+        APP_VERSION: ${{ steps.version.outputs.version }}
+        APP_VERSION_MAJOR: ${{ steps.version.outputs.major }}
+        APP_VERSION_MINOR: ${{ steps.version.outputs.minor }}
+        APP_VERSION_PATCH: ${{ steps.version.outputs.patch }}
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=${{ matrix.type }} -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache'
+        buildWithCMake: true
+        buildDirectory: '${{ github.workspace }}/build'
+
+    - name: Post Build
+      run: |
+        mkdir -p build/test-reports
+    - name: Tests
+      run: cmake --build build --target test
+
+    - name: Postprocess Code Coverage Summary
+      run: |
+        touch comment.md
+        echo "## Config" >> comment.md
+        echo "\`\`\`" >> comment.md
+        echo "OS         : ${{ matrix.os }}" >> comment.md
+        echo "App Version: ${{ steps.version.outputs.version }}" >> comment.md
+        echo "Config     : ${{ matrix.type }}" >> comment.md
+        echo "\`\`\`" >> comment.md
+        echo "" >> comment.md
+        echo "## Changelog " >> comment.md
+        cat ${{ steps.build_changelog.outputs.changelog }} >> comment.md
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request' && 
+        matrix.os == 'ubuntu-latest'
+      with:
+        header: ${{ matrix.type }}
+        recreate: true
+        path: comment.md
+
+    - name: Archive test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          build/test-reports/
+    - name: Release
+      if: github.event.action == 'closed' && 
+        github.event.pull_request.merged == true && 
+        matrix.type == 'Release' && 
+        github.event.pull_request.base == 'main'
+      uses: ncipollo/release-action@v1
+      with:
+        tag: v${{ steps.version.outputs.version }}
+        name: Release v${{ steps.version.outputs.version }}
+        body: v${{ steps.version.outputs.version }}
+
