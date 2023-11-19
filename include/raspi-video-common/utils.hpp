@@ -23,6 +23,23 @@ namespace utils {
     return t;
   }
 
+  template<typename T,
+           typename U>
+  bool isBitSet(T bitset, U bit) {
+    return (static_cast<uint64_t>(bitset) &
+            static_cast<uint64_t>(bit)) == static_cast<uint64_t>(bit);
+  }
+
+  struct SSegmentData {
+    const void* begin;
+    size_t      length;
+  };
+
+  extern std::vector<SSegmentData> segment(
+      const void* data, 
+      size_t length, 
+      size_t segmentSize);
+
   struct SHexPrintConfig {
     const uint8_t stride = 16; // how many bytes in a row
     const uint8_t lineWidth = 4; // width of the line number indicator
