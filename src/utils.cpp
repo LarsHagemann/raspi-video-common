@@ -18,7 +18,7 @@ std::vector<utils::SSegmentData> utils::segment(
       : segmentSize;
     const auto offset = i * segmentSize;
     const auto begin = (const void*)((const char*)data + offset);
-    result.emplace_back(utils::SSegmentData{ begin, len });
+    result.emplace_back(utils::SSegmentData{ begin, offset, len });
   }
 
   return result;

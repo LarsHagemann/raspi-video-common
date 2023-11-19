@@ -32,6 +32,7 @@ namespace utils {
 
   struct SSegmentData {
     const void* begin;
+    size_t      offset;
     size_t      length;
   };
 
