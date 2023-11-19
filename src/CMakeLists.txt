@@ -21,7 +21,8 @@ target_include_directories(
 add_executable(
     raspi-video-common-test
 
-    test/sample.test.cpp
+    test/ip-address.test.cpp
+    test/utils.test.cpp
 )
 target_link_libraries(
     raspi-video-common-test
