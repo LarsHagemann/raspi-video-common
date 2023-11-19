@@ -12,10 +12,10 @@ CIpAddress::CIpAddress(uint32_t ip)
 
 CIpAddress::CIpAddress(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
   : CIpAddress(
-      static_cast<uint32_t>((a << 24) & 0xFF) |
-      static_cast<uint32_t>((b << 16) & 0xFF) |
-      static_cast<uint32_t>((c <<  8) & 0xFF) |
-      static_cast<uint32_t>((d <<  0) & 0xFF))
+      ((static_cast<uint32_t>(a) << 24) & 0xFF000000) |
+      ((static_cast<uint32_t>(b) << 16) & 0x00FF0000) |
+      ((static_cast<uint32_t>(c) <<  8) & 0x0000FF00) |
+      ((static_cast<uint32_t>(d) <<  0) & 0x000000FF))
 {}
 
 CIpAddress::CIpAddress(const char* ip) {
@@ -31,15 +31,16 @@ CIpAddress::CIpAddress(const std::string& ip)
 {}
 
 uint32_t CIpAddress::toUInt32() const noexcept {
-  return m_addr;
+  return ntohl(m_addr);
 }
 
 SIP_4UInt8 CIpAddress::toSIP_4UInt8() const noexcept {
+  const auto addr = toUInt32();
   return SIP_4UInt8{
-    .a = { static_cast<uint8_t>((m_addr >> 24) & 0xFF) },
-    .b = { static_cast<uint8_t>((m_addr >> 16) & 0xFF) },
-    .c = { static_cast<uint8_t>((m_addr >>  8) & 0xFF) },
-    .d = { static_cast<uint8_t>((m_addr >>  0) & 0xFF) }
+    .a = { static_cast<uint8_t>((addr >> 24) & 0xFF) },
+    .b = { static_cast<uint8_t>((addr >> 16) & 0xFF) },
+    .c = { static_cast<uint8_t>((addr >>  8) & 0xFF) },
+    .d = { static_cast<uint8_t>((addr >>  0) & 0xFF) }
   };
 }
 
