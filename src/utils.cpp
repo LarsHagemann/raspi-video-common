@@ -3,6 +3,27 @@
 #include <cstdio>
 #include <cctype>
 
+std::vector<utils::SSegmentData> utils::segment(
+    const void* data,
+    size_t      length,
+    size_t      segmentSize
+    ) {
+  const auto numSegments = length / segmentSize + 1;
+  std::vector<utils::SSegmentData> result;
+  result.reserve(numSegments);
+
+  for (auto i = 0u; i < numSegments; ++i) {
+    const auto len = i == numSegments - 1
+      ? length - (i * segmentSize)
+      : segmentSize;
+    const auto offset = i * segmentSize;
+    const auto begin = (const void*)((const char*)data + offset);
+    result.emplace_back(utils::SSegmentData{ begin, len });
+  }
+
+  return result;
+}
+
 void utils::hexPrint(
     const std::vector<uint8_t>& data,
     const SHexPrintConfig& config) {

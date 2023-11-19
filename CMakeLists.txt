@@ -4,7 +4,9 @@ project(raspi-video-common)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(Catch2)
+if (NOT TARGET Catch2)
+  add_subdirectory(Catch2)
+endif()
 
 enable_testing()
 
