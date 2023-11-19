@@ -5,7 +5,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <format>
 
 CIpAddress::CIpAddress(uint32_t ip)
   : m_addr(htonl(ip))
@@ -46,7 +45,9 @@ SIP_4UInt8 CIpAddress::toSIP_4UInt8() const noexcept {
 
 std::string CIpAddress::toString() const noexcept {
   auto ui8 = toSIP_4UInt8();
-  return std::format("{:d}.{:d}.{:d}.{:d}", ui8.a, ui8.b, ui8.c, ui8.d);
+  char ipStr[16];
+  auto written = sprintf(ipStr, "%d.%d.%d.%d", ui8.a, ui8.b, ui8.c, ui8.d);
+  return std::string{ ipStr, static_cast<size_t>(written) };
 }
 
 struct in_addr CIpAddress::toInAddr() const noexcept {

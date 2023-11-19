@@ -16,4 +16,4 @@ target_include_directories(
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}/../include/
 )
-message("${CMAKE_CURRENT_LIST_DIR}/../include/")
+
