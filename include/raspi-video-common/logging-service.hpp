@@ -44,6 +44,7 @@ public:
 
   void write(const char* data, size_t length) override {
     m_stream->write(data, length);
+    m_stream->flush();
     if (m_child) {
       m_child->write(data, length);
     }
@@ -59,6 +60,7 @@ public:
 
   void write(const char* data, size_t length) override {
     m_stream->write(data, length);
+    m_stream->flush();
     if (m_child) {
       m_child->write(data, length);
     }

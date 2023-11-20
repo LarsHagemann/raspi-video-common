@@ -18,7 +18,7 @@ void CLoggingService::log(const char* level, const char* message, va_list args) 
       level,
       formattedMessage.c_str());
 
-  m_stream->write(msg.data(), msg.length());
+  m_stream->write(msg.data(), msg.length() - 1);
 }
 
 
