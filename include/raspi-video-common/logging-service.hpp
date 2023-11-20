@@ -1,6 +1,7 @@
 #ifndef RASPI_VIDEO_COMMON_LOGGING_SERVICE_HPP
 #define RASPI_VIDEO_COMMON_LOGGING_SERVICE_HPP
 
+#include <mutex>
 #include <cstdarg>
 #include <memory>
 #include <iostream>
@@ -70,6 +71,7 @@ public:
 class CLoggingService {
 private:
   std::unique_ptr<CLoggingServiceStream> m_stream;
+  std::mutex                             m_mutex;
 protected:
   void log(const char* level, const char* message, va_list args);
 public:

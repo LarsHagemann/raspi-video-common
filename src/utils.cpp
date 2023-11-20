@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cctype>
+#include <pthread.h>
 
 std::vector<utils::SSegmentData> utils::segment(
     const void* data,
@@ -80,5 +81,35 @@ std::string utils::vformat(const char* format, va_list args) {
   str.resize(len + 1);
   vsnprintf(str.data(), len + 1, format, args);
   return str;
+}
+
+void utils::setThreadName(
+    std::thread& thread,
+    const std::string& name) {
+  
+  auto handle = thread.native_handle();
+  setThreadName(
+      &handle,
+      name
+  );
+}
+
+void utils::setThreadName(
+    std::jthread& thread,
+    const std::string& name) {
+
+  auto handle = thread.native_handle();
+
+  setThreadName(
+      &handle,
+      name
+  );
+}
+
+void utils::setThreadName(
+    pthread_t* handle,
+    const std::string& name) {
+  
+  pthread_setname_np(*handle, name.c_str());
 }
 

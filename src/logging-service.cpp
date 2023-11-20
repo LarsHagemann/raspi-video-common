@@ -18,6 +18,7 @@ void CLoggingService::log(const char* level, const char* message, va_list args) 
       level,
       formattedMessage.c_str());
 
+  std::scoped_lock lock{ m_mutex };
   m_stream->write(msg.data(), msg.length() - 1);
 }
 

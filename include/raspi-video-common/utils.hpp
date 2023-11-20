@@ -1,6 +1,7 @@
 #ifndef RASPI_VIDEO_COMMON_UTILS_HPP
 #define RASPI_VIDEO_COMMON_UTILS_HPP
 
+#include <thread>
 #include <cstdint>
 #include <cstring>
 #include <cstdarg>
@@ -60,6 +61,18 @@ namespace utils {
 
   extern std::string format(const char* format, ...);
   extern std::string vformat(const char* format, va_list args);
+
+  extern void setThreadName(
+      std::thread& thread,
+      const std::string& name);
+
+  extern void setThreadName(
+      std::jthread& thread,
+      const std::string& name);
+
+  extern void setThreadName(
+      pthread_t* handle,
+      const std::string& name);
 
 }
 
