@@ -64,3 +64,21 @@ void utils::hexPrint(
   }
 
 }
+
+std::string utils::format(const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  auto result = utils::vformat(format, args);
+  va_end(args);
+  return result;
+}
+
+std::string utils::vformat(const char* format, va_list args) {
+  char c = '\0';
+  auto len = vsnprintf(&c, 1, format, args);
+  std::string str;
+  str.resize(len + 1);
+  vsnprintf(str.data(), len + 1, format, args);
+  return str;
+}
+

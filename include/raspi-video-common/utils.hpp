@@ -3,7 +3,9 @@
 
 #include <cstdint>
 #include <cstring>
+#include <cstdarg>
 #include <vector>
+#include <string>
 
 namespace utils {
   
@@ -55,6 +57,9 @@ namespace utils {
   extern void hexPrint(
       const std::vector<uint8_t>& data,
       const SHexPrintConfig& config = SHexPrintConfig());
+
+  extern std::string format(const char* format, ...);
+  extern std::string vformat(const char* format, va_list args);
 
 }
 
