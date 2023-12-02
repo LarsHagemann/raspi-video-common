@@ -25,6 +25,7 @@ struct TSImageChunkMessage {
   uint32_t         imageByteLength;
   uint16_t         width;
   uint16_t         height;
+  uint8_t          numChunks;
 
   char             chunk[ChunkSize];
 };

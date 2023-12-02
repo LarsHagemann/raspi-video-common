@@ -4,6 +4,8 @@ set(
   ${CMAKE_CURRENT_LIST_DIR}/ip-address.cpp
   ${CMAKE_CURRENT_LIST_DIR}/logging-service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/utils.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/multicast-client.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/streaming-image-builder.cpp
 )
 
 add_library(
